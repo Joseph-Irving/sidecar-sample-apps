@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+        - name: primary
+          imagePullPolicy: Always
+          image: quay.io/joseph_irving/sidecar-sample-app:devel
+          args: ["primary"]
+        - name: sidecar
+          image: quay.io/joseph_irving/sidecar-sample-app:devel
+          imagePullPolicy: Always
+          args: ["sidecar"]
+          sidecar: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080

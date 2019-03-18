@@ -1,0 +1,23 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testyjob
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        app: jobtest
+    spec:
+      containers:
+      - name: worker
+        imagePullPolicy: Always
+        image: quay.io/joseph_irving/sidecar-sample-app:devel
+        args: ["worker"]
+      - name: sidecar
+        image: quay.io/joseph_irving/sidecar-sample-app:devel
+        imagePullPolicy: Always
+        args: ["sidecar"]
+        sidecar: true
+      restartPolicy: Never
